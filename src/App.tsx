@@ -3,7 +3,6 @@ import EasingGraph from "./EasingGraphComponent";
 import { EasingFunction, EasingGraphStyle } from "./EasingGraph";
 import "./App.css";
 import { useState } from "react";
-import { Quad } from "pixi.js";
 
 const poly = (exp: number) => (x: number) => x ** exp;
 const scale =
