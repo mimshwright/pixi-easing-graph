@@ -9,7 +9,7 @@ export type ExamplePosition = "bottom" | "right" | "both";
 export interface EasingGraphOptions {
   width: number;
   height: number;
-  steps?: number;
+  steps: number;
   style: EasingGraphStyle;
   clamp: boolean;
   background: number;
@@ -35,6 +35,7 @@ const defaultOptions: EasingGraphOptions = {
   height: 250,
   style: "dot",
   clamp: false,
+  steps: NaN,
   dotSize: 2,
   background: 0xffffff,
   foreground: 0x000000,
@@ -159,9 +160,16 @@ class EasingGraph extends Sprite {
   }
   draw() {
     const g = this.graphics;
-    const { width, height, style, background, dotSize, gridCount, clamp } =
-      this.options;
-    const steps = this.options.steps ?? width / dotSize;
+    const {
+      width,
+      height,
+      style,
+      background,
+      steps: stepsOrNaN,
+      gridCount,
+      clamp,
+    } = this.options;
+    const steps = isNaN(stepsOrNaN) ? width : stepsOrNaN;
 
     const clampFunction = clamp ? clamp01 : identity;
 

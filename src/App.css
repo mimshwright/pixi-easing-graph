@@ -5,8 +5,21 @@
   text-align: center;
 }
 
+.vbox,
+.hbox {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+}
+.vbox {
+  flex-direction: column;
+}
+
 div {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+}
+button {
+  margin: 0 0.25rem 0.25rem 0;
 }
 button.selected {
   background-color: #646cff;

@@ -1,8 +1,8 @@
-import { Stage } from "@inlet/react-pixi";
+import { Stage, Text } from "@inlet/react-pixi";
 import EasingGraph from "./EasingGraphComponent";
 import { EasingFunction, EasingGraphStyle } from "./EasingGraph";
 import "./App.css";
-import { useState } from "react";
+import React, { ReactChildren, useState } from "react";
 
 const poly = (exp: number) => (x: number) => x ** exp;
 const scale =
@@ -54,9 +54,26 @@ const styles: Record<string, EasingGraphStyle> = {
   Fill: "fill",
 };
 
+type ToggleButtonProps<T> = {
+  value: boolean;
+  setter: React.Dispatch<React.SetStateAction<boolean>>;
+  children: ReactChildren | string;
+};
+const ToggleButton = ({
+  children,
+  value,
+  setter,
+}: ToggleButtonProps<unknown>) => (
+  <button className={value ? "selected" : ""} onClick={() => setter(!value)}>
+    {children}
+  </button>
+);
+
 function App() {
   const [f, setF] = useState<EasingFunction>(() => fs.quad);
   const [style, setStyle] = useState<EasingGraphStyle>("line");
+  const [clamp, setClamp] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
   const [play, setPlay] = useState(0);
 
   const replay = () => setPlay((play + 1) % 2);
@@ -66,19 +83,6 @@ function App() {
   return (
     <div className="App">
       <h1>Easing Graph Demo</h1>
-      <div>
-        <h2>Graph styles</h2>
-        {styleMap.map(([key, value]) => (
-          <button
-            className={value === style ? "selected" : ""}
-            key={key}
-            onClick={() => setStyle(() => value)}
-          >
-            {key}
-          </button>
-        ))}
-      </div>
-
       <div>
         <h2>Functions</h2>
         {functionMap.map(([key, value]) => (
@@ -91,11 +95,33 @@ function App() {
           </button>
         ))}
       </div>
-      <div>
-        <button style={{ fontSize: 30, padding: 20 }} onClick={replay}>
-          🔄
-        </button>
+
+      <div className="hbox">
+        <div>
+          <h2>Graph styles</h2>
+          {styleMap.map(([key, value]) => (
+            <button
+              className={value === style ? "selected" : ""}
+              key={key}
+              onClick={() => setStyle(() => value)}
+            >
+              {key}
+            </button>
+          ))}
+        </div>
+
+        <div>
+          <h2>Other options</h2>
+          <ToggleButton value={clamp} setter={setClamp}>
+            Clamp
+          </ToggleButton>
+          <ToggleButton value={showGrid} setter={setShowGrid}>
+            Show Grid
+          </ToggleButton>
+          <button onClick={replay}>Replay 🔄</button>
+        </div>
       </div>
+
       <Stage
         width={400}
         height={500}
@@ -105,13 +131,13 @@ function App() {
           f={f}
           play={play}
           style={style}
-          steps={50}
-          // clamp={true}
+          // steps={50}
+          clamp={clamp}
           x={50}
           y={50}
           width={250}
           height={250}
-          background={0xeeffff}
+          background={showGrid ? 0xeeffff : 0xffffff}
           foreground={0x0000ff}
           fillAlpha={0.5}
           markerColor={0xff00ff}
@@ -120,10 +146,12 @@ function App() {
           exampleSize={25}
           // examplePosition={"both"}
           // exampleTrail={true}
-          gridCount={10}
+          gridCount={showGrid ? 10 : 0}
           gridColor={0x00ffff}
           gridSubdivisions={true}
-        />
+        >
+          <Text y={-50} text={f.toString()}></Text>
+        </EasingGraph>
       </Stage>
     </div>
   );
