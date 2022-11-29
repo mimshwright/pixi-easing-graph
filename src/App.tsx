@@ -26,6 +26,9 @@ const splitN =
     fs[Math.max(0, Math.floor(x * fs.length))](x);
 const mirror = (f: EasingFunction): EasingFunction =>
   split(scale(2)(f), reflectX(scale(2)(f)));
+const sine = (freq: number) => (x: number) =>
+  Math.sin(x * freq * Math.PI * 2) / 2 + 0.5;
+const cosine = (freq: number) => (x: number) => sine(freq)(x + 0.25 / freq);
 
 const fs = {
   linear: I,
@@ -37,6 +40,8 @@ const fs = {
   quint: poly(5),
   "cubic-reflectY": reflectY(poly(3)),
   "cubic-reflectX": reflectX(poly(3)),
+  sine: sine(2),
+  cosine: cosine(2),
   rand: (x: number) => Math.random(),
   const: K(0.5),
   thresh: thresh(0.5),
