@@ -1,5 +1,5 @@
 import { Sprite, Graphics, Texture, Ticker, TickerCallback } from "pixi.js";
-import { apply, times, zip } from "ramda";
+import { apply, times, zip, clamp, identity } from "ramda";
 
 type Point = [number, number];
 export type EasingFunction = (x: number) => number;
@@ -11,8 +11,10 @@ export interface EasingGraphOptions {
   height: number;
   steps?: number;
   style: EasingGraphStyle;
+  clamp: boolean;
   background: number;
   foreground: number;
+  fillAlpha: number;
   showMarker: boolean;
   markerColor: number;
   markerSize: number;
@@ -32,9 +34,11 @@ const defaultOptions: EasingGraphOptions = {
   width: 250,
   height: 250,
   style: "dot",
+  clamp: false,
   dotSize: 2,
   background: 0xffffff,
   foreground: 0x000000,
+  fillAlpha: 0.5,
   showMarker: true,
   markerColor: 0xff0000,
   markerSize: 10,
@@ -46,6 +50,8 @@ const defaultOptions: EasingGraphOptions = {
   gridCount: 0,
   gridSubdivisions: true,
 };
+
+const clamp01 = clamp(0, 1);
 
 class EasingGraph extends Sprite {
   f: EasingFunction;
@@ -93,7 +99,7 @@ class EasingGraph extends Sprite {
   }
 
   play() {
-    this.stopAnimation();
+    this.stop();
 
     const { showMarker, examplePosition } = this.options;
 
@@ -107,50 +113,63 @@ class EasingGraph extends Sprite {
     this.t = 0;
 
     this.isPlaying = true;
-    ticker.add<EasingGraph>(this.step, this);
+    ticker.add<EasingGraph>(this.animationStep, this);
   }
-
-  private stopAnimation() {
-    ticker.remove<EasingGraph>(this.step, this);
+  stop() {
+    ticker.remove<EasingGraph>(this.animationStep, this);
     this.isPlaying = false;
   }
 
-  private step() {
-    const { width, height, exampleTrail, dotSize, foreground } = this.options;
+  private animationStep() {
     this.t += ticker.deltaMS;
+    const {
+      t,
+      options,
+      exampleX: ex,
+      exampleY: ey,
+      marker,
+      f,
+      duration,
+      trail,
+    } = this;
+    const { clamp, width, height, exampleTrail, dotSize, foreground } = options;
 
-    const x = this.t / this.duration;
-    const y = this.f(x);
+    const clampFunction = clamp ? clamp01 : identity;
 
-    this.marker.x = x * width;
-    this.marker.y = height - y * height;
+    const x = t / duration;
+    const y = clampFunction(f(x));
 
-    this.exampleX.x = height - this.marker.y;
-    this.exampleY.y = this.marker.y;
+    marker.x = x * width;
+    marker.y = height - y * height;
+
+    if (ex.visible) ex.x = y * width;
+    if (ey.visible) ey.y = marker.y;
 
     if (exampleTrail) {
-      const g = this.trail;
+      const g = trail;
       g.beginFill(foreground);
-      if (this.exampleX.visible)
-        g.drawCircle(this.exampleX.x, this.exampleX.y, dotSize);
-      if (this.exampleY.visible)
-        g.drawCircle(this.exampleY.x, this.exampleY.y, dotSize);
+      if (ex.visible) g.drawCircle(ex.x, ex.y, dotSize);
+      if (ey.visible) g.drawCircle(ey.x, ey.y, dotSize);
       g.endFill();
     }
 
-    if (this.t > this.duration) {
-      this.stopAnimation();
+    if (t > duration) {
+      this.stop();
     }
   }
-
   draw() {
     const g = this.graphics;
-    const { width, height, style, background, dotSize, gridCount } =
+    const { width, height, style, background, dotSize, gridCount, clamp } =
       this.options;
     const steps = this.options.steps ?? width / dotSize;
 
+    const clampFunction = clamp ? clamp01 : identity;
+
     const inputs = times((n) => n / (steps - 1), steps);
-    const outputs = inputs.map(this.f);
+    const outputs = inputs
+      .map(this.f)
+      // clamp values?
+      .map(clampFunction);
     const coords: Point[] = zip(inputs, outputs);
     const coordToPixel = ([x, y]: Point): Point => [
       x * width,
@@ -195,12 +214,12 @@ class EasingGraph extends Sprite {
     g.lineStyle();
   }
   drawFill(coords: Point[]) {
-    const { foreground, width, height } = this.options;
+    const { foreground, fillAlpha, width, height } = this.options;
     const g = this.graphics;
     const drawLine = apply(g.lineTo.bind(g));
 
     g.moveTo(0, height);
-    g.beginFill(foreground);
+    g.beginFill(foreground, fillAlpha);
     coords.map(drawLine);
     g.lineTo(width, 0);
     g.lineTo(width, height);
