@@ -74,6 +74,7 @@ function App() {
   const [style, setStyle] = useState<EasingGraphStyle>("line");
   const [clamp, setClamp] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
+  const [trails, setTrails] = useState(false);
   const [play, setPlay] = useState(0);
 
   const replay = () => setPlay((play + 1) % 2);
@@ -83,6 +84,7 @@ function App() {
   return (
     <div className="App">
       <h1>Easing Graph Demo</h1>
+      <a href="https://github.com/mimshwright/pixi-easing-graph">On GitHub</a>
       <div>
         <h2>Functions</h2>
         {functionMap.map(([key, value]) => (
@@ -118,6 +120,9 @@ function App() {
           <ToggleButton value={showGrid} setter={setShowGrid}>
             Show Grid
           </ToggleButton>
+          <ToggleButton value={trails} setter={setTrails}>
+            Show Trails
+          </ToggleButton>
           <button onClick={replay}>Replay 🔄</button>
         </div>
       </div>
@@ -145,7 +150,7 @@ function App() {
           exampleColor={0xcc00ff}
           exampleSize={25}
           // examplePosition={"both"}
-          // exampleTrail={true}
+          exampleTrail={trails}
           gridCount={showGrid ? 10 : 0}
           gridColor={0x00ffff}
           gridSubdivisions={true}

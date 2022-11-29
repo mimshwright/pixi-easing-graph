@@ -47,9 +47,10 @@ const defaultOptions: EasingGraphOptions = {
   exampleSize: 50,
   examplePosition: "bottom",
   exampleTrail: false,
+  gridCount: 10,
   gridColor: 0xcccccc,
-  gridCount: 0,
   gridSubdivisions: true,
+  // TODO: Add animation properties
 };
 
 const clamp01 = clamp(0, 1);
