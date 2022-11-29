@@ -44,8 +44,8 @@ const fs = {
   rand: (x: number) => Math.random(),
   const: K(0.5),
   thresh: thresh(0.5),
-  splitLinearQuad: split(I, poly(2)),
-  splitMulti: splitN([I, K(0.25), I, K(0.75)]),
+  "split-cos-quad": split(cosine(2), poly(2)),
+  // splitMulti: splitN([I, K(0.25), I, K(0.75)]),
   mirror: mirror(I),
 };
 const styles: Record<string, EasingGraphStyle> = {
