@@ -55,9 +55,11 @@ const styles: Record<string, EasingGraphStyle> = {
 };
 
 function App() {
-  const [f, setF] = useState<EasingFunction>(() => fs.linear);
+  const [f, setF] = useState<EasingFunction>(() => fs.quad);
   const [style, setStyle] = useState<EasingGraphStyle>("dot");
+  const [play, setPlay] = useState(0);
 
+  const replay = () => setPlay((play + 1) % 2);
   const functionMap = Object.entries(fs);
   const styleMap = Object.entries(styles);
 
@@ -89,6 +91,11 @@ function App() {
           </button>
         ))}
       </div>
+      <div>
+        <button style={{ fontSize: 30, padding: 20 }} onClick={replay}>
+          🔄
+        </button>
+      </div>
       <Stage
         width={800}
         height={450}
@@ -96,11 +103,24 @@ function App() {
       >
         <EasingGraph
           f={f}
-          gridCount={10}
-          width={250}
+          play={play}
           style={style}
+          steps={50}
           x={275}
           y={100}
+          width={250}
+          height={250}
+          background={0xeeffff}
+          foreground={0x0000ff}
+          markerColor={0xff00ff}
+          markerSize={8}
+          exampleColor={0xffffff}
+          exampleSize={25}
+          // examplePosition={"both"}
+          // exampleTrail={true}
+          gridCount={10}
+          gridColor={0x00ffff}
+          gridSubdivisions={true}
         />
       </Stage>
     </div>

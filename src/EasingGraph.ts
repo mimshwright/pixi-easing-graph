@@ -1,29 +1,32 @@
-import { PixiComponent } from "@inlet/react-pixi";
-import { Sprite, Graphics } from "pixi.js";
+import { Sprite, Graphics, Texture, Ticker, TickerCallback } from "pixi.js";
 import { apply, times, zip } from "ramda";
 
 type Point = [number, number];
 export type EasingFunction = (x: number) => number;
 
 export type EasingGraphStyle = "dot" | "line" | "fill";
-
+export type ExamplePosition = "bottom" | "right" | "both";
 export interface EasingGraphOptions {
   width: number;
   height: number;
+  steps?: number;
+  style: EasingGraphStyle;
   background: number;
   foreground: number;
-  gridColor: number;
-  style: EasingGraphStyle;
+  showMarker: boolean;
+  markerColor: number;
+  markerSize: number;
+  exampleColor: number;
+  exampleSize: number;
+  examplePosition: ExamplePosition;
+  exampleTrail: boolean;
   dotSize: number;
+  gridColor: number;
   gridCount: number;
-  steps?: number;
+  gridSubdivisions: boolean;
 }
 
-export type EasingGraphProps = {
-  f: EasingFunction;
-  x?: number;
-  y?: number;
-} & Partial<EasingGraphOptions>;
+const ticker = Ticker.shared;
 
 const defaultOptions: EasingGraphOptions = {
   width: 250,
@@ -32,25 +35,112 @@ const defaultOptions: EasingGraphOptions = {
   dotSize: 2,
   background: 0xffffff,
   foreground: 0x000000,
+  showMarker: true,
+  markerColor: 0xff0000,
+  markerSize: 10,
+  exampleColor: 0x333333,
+  exampleSize: 50,
+  examplePosition: "bottom",
+  exampleTrail: false,
   gridColor: 0xcccccc,
   gridCount: 0,
+  gridSubdivisions: true,
 };
 
 class EasingGraph extends Sprite {
   f: EasingFunction;
   graphics: Graphics;
+  trail: Graphics;
   options: EasingGraphOptions;
+
+  isPlaying: boolean = false;
+  marker: Marker;
+  exampleX: Marker;
+  exampleY: Marker;
+  t: number = 0;
+  duration: number = 2000;
 
   static defaultOptions = defaultOptions;
 
   constructor(f: EasingFunction, options: Partial<EasingGraphOptions> = {}) {
     super();
     this.f = f;
-    this.graphics = new Graphics();
-    this.addChild(this.graphics);
     this.options = { ...defaultOptions, ...options };
 
-    this.draw();
+    this.graphics = new Graphics();
+    this.addChild(this.graphics);
+
+    this.trail = new Graphics();
+    this.addChild(this.trail);
+
+    const { markerSize, markerColor, exampleColor, exampleSize } = this.options;
+
+    this.marker = new Marker(markerColor, markerSize);
+    this.marker.visible = false;
+    this.addChild(this.marker);
+
+    this.exampleX = new Marker(exampleColor, exampleSize);
+    this.exampleX.visible = false;
+    this.exampleX.x = 0;
+    this.exampleX.y = this.options.height + exampleSize * 1.5;
+    this.addChild(this.exampleX);
+
+    this.exampleY = new Marker(exampleColor, exampleSize);
+    this.exampleY.visible = false;
+    this.exampleY.x = this.options.width + exampleSize * 1.5;
+    this.exampleY.y = this.options.height;
+    this.addChild(this.exampleY);
+  }
+
+  play() {
+    this.stopAnimation();
+
+    const { showMarker, examplePosition } = this.options;
+
+    if (showMarker) this.marker.visible = true;
+
+    this.exampleY.visible = this.exampleX.visible = true;
+    if (examplePosition === "bottom") this.exampleY.visible = false;
+    if (examplePosition === "right") this.exampleX.visible = false;
+
+    this.trail.clear();
+    this.t = 0;
+
+    this.isPlaying = true;
+    ticker.add<EasingGraph>(this.step, this);
+  }
+
+  private stopAnimation() {
+    ticker.remove<EasingGraph>(this.step, this);
+    this.isPlaying = false;
+  }
+
+  private step() {
+    const { width, height, exampleTrail, dotSize, foreground } = this.options;
+    this.t += ticker.deltaMS;
+
+    const x = this.t / this.duration;
+    const y = this.f(x);
+
+    this.marker.x = x * width;
+    this.marker.y = height - y * height;
+
+    this.exampleX.x = height - this.marker.y;
+    this.exampleY.y = this.marker.y;
+
+    if (exampleTrail) {
+      const g = this.trail;
+      g.beginFill(foreground);
+      if (this.exampleX.visible)
+        g.drawCircle(this.exampleX.x, this.exampleX.y, dotSize);
+      if (this.exampleY.visible)
+        g.drawCircle(this.exampleY.x, this.exampleY.y, dotSize);
+      g.endFill();
+    }
+
+    if (this.t > this.duration) {
+      this.stopAnimation();
+    }
   }
 
   draw() {
@@ -95,10 +185,11 @@ class EasingGraph extends Sprite {
     g.endFill();
   }
   drawLines(coords: Point[]) {
-    const { foreground } = this.options;
+    const { foreground, height } = this.options;
     const g = this.graphics;
     const drawLine = apply(g.lineTo.bind(g));
 
+    g.moveTo(0, height);
     g.lineStyle(1, foreground);
     coords.map(drawLine);
     g.lineStyle();
@@ -120,10 +211,21 @@ class EasingGraph extends Sprite {
 
   drawGrid() {
     const g = this.graphics;
-    const { width, height, gridCount, gridColor } = this.options;
+    const { width, height, gridCount, gridColor, gridSubdivisions } =
+      this.options;
 
     g.lineStyle(1, gridColor);
     const drawGridLines = (pos: number) => {
+      g.lineStyle(1, gridColor);
+      if (
+        (gridSubdivisions && pos === 0) ||
+        pos === gridCount ||
+        (pos === gridCount / 2 && gridCount % 2 === 0)
+      ) {
+        g.lineStyle(2, gridColor);
+        g.lineStyle(2, gridColor);
+      }
+
       g.moveTo(0, (pos / gridCount) * height);
       g.lineTo(width, (pos / gridCount) * height);
       g.closePath();
@@ -131,8 +233,32 @@ class EasingGraph extends Sprite {
       g.lineTo((pos / gridCount) * width, height);
       g.closePath();
     };
-    times(drawGridLines, gridCount);
+    times(drawGridLines, gridCount + 1);
     g.lineStyle();
   }
 }
 export default EasingGraph;
+
+class Marker extends Sprite {
+  color: number;
+  size: number;
+  graphics: Graphics;
+
+  constructor(color: number, size: number, texture?: Texture) {
+    super(texture);
+    this.color = color;
+    this.size = size;
+    this.graphics = new Graphics();
+    this.addChild(this.graphics);
+    this.anchor.set(0.5);
+
+    this.draw();
+  }
+  draw() {
+    const { graphics: g, color, size } = this;
+    g.clear();
+    g.beginFill(color);
+    g.drawCircle(0, 0, size);
+    g.endFill();
+  }
+}

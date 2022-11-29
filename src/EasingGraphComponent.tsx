@@ -1,6 +1,12 @@
 import { PixiComponent } from "@inlet/react-pixi";
-import EasingGraph, { EasingGraphProps } from "./EasingGraph";
+import EasingGraph, { EasingFunction, EasingGraphOptions } from "./EasingGraph";
 
+export type EasingGraphProps = {
+  f: EasingFunction;
+  x?: number;
+  y?: number;
+  play?: number;
+} & Partial<EasingGraphOptions>;
 export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
   create: ({ f, ...options }) => {
     return new EasingGraph(f, options);
@@ -13,8 +19,22 @@ export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
     // clean up before removal
   },
   applyProps: (instance, oldProps, newProps) => {
-    const { f: functionOld, x: xOld, y: yOld, ...optionsOld } = oldProps;
-    const { f: funcitonNew, x: xNew, y: yNew, ...optionsNew } = newProps;
+    const {
+      f: functionOld,
+      play: playOld,
+      x: xOld,
+      y: yOld,
+      ...optionsOld
+    } = oldProps;
+    const {
+      f: funcitonNew,
+      play: playNew,
+      x: xNew,
+      y: yNew,
+      ...optionsNew
+    } = newProps;
+
+    if (playOld !== playNew) instance.play();
 
     const dirty =
       optionsOld !== optionsNew ||
@@ -28,6 +48,7 @@ export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
 
     if (!dirty) return;
     instance.draw();
+    instance.play();
   },
   config: {
     // destroy instance on unmount?
