@@ -39,6 +39,7 @@ export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
     const dirty =
       optionsOld !== optionsNew ||
       optionsOld.style !== optionsNew.style ||
+      optionsOld.showExample !== optionsNew.showExample ||
       functionOld !== funcitonNew;
 
     instance.x = xNew ?? xOld ?? 0;

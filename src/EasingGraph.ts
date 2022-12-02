@@ -18,6 +18,8 @@ export interface EasingGraphOptions {
   showMarker: boolean;
   markerColor: number;
   markerSize: number;
+  markerTrail: boolean;
+  showExample: boolean;
   exampleColor: number;
   exampleSize: number;
   examplePosition: ExamplePosition;
@@ -43,6 +45,8 @@ const defaultOptions: EasingGraphOptions = {
   showMarker: true,
   markerColor: 0xff0000,
   markerSize: 10,
+  markerTrail: false,
+  showExample: false,
   exampleColor: 0x333333,
   exampleSize: 50,
   examplePosition: "bottom",
@@ -103,11 +107,13 @@ class EasingGraph extends Sprite {
   play() {
     this.stop();
 
-    const { showMarker, examplePosition } = this.options;
+    const { showMarker, showExample, examplePosition } = this.options;
 
     if (showMarker) this.marker.visible = true;
 
-    this.exampleY.visible = this.exampleX.visible = true;
+    if (showExample) {
+      this.exampleY.visible = this.exampleX.visible = true;
+    }
     if (examplePosition === "bottom") this.exampleY.visible = false;
     if (examplePosition === "right") this.exampleX.visible = false;
 
@@ -134,7 +140,15 @@ class EasingGraph extends Sprite {
       duration,
       trail,
     } = this;
-    const { clamp, width, height, exampleTrail, dotSize, foreground } = options;
+    const {
+      clamp,
+      width,
+      height,
+      exampleTrail,
+      markerTrail,
+      dotSize,
+      foreground,
+    } = options;
 
     const clampFunction = clamp ? clamp01 : identity;
 
@@ -147,13 +161,16 @@ class EasingGraph extends Sprite {
     if (ex.visible) ex.x = y * width;
     if (ey.visible) ey.y = marker.y;
 
+    const g = trail;
+    g.beginFill(foreground);
     if (exampleTrail) {
-      const g = trail;
-      g.beginFill(foreground);
       if (ex.visible) g.drawCircle(ex.x, ex.y, dotSize);
       if (ey.visible) g.drawCircle(ey.x, ey.y, dotSize);
-      g.endFill();
     }
+    if (markerTrail) {
+      if (marker.visible) g.drawCircle(marker.x, marker.y, dotSize);
+    }
+    g.endFill();
 
     if (t > duration) {
       this.stop();

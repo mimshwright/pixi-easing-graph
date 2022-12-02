@@ -22,6 +22,7 @@ A utility component for viewing easing functions in Pixi.js
 - `showMarker` - when true, the animation includes a marker dot that follows the graph - default `true`
 - `markerColor` - color of the marker - default `0xff0000`
 - `markerSize` - size of the marker - default `10`
+- `markerTrail` - when true, the marker leave a trail of dots - default `false`
 - `examplePosition` - position of the animated example: "bottom", "right" or "both - default `"bottom"`,
 - `exampleColor` - color of the example animation - default `0x333333`
 - `exampleSize` - size of the example - default `50`
