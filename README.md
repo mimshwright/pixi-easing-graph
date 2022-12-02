@@ -40,7 +40,7 @@ const graph = new EasingGraph(func [, options]);
 
 To play an animation of the easing function, use the `play()` method.
 
-```javascript
+```js
 import { EasingGraph } from "pixi-easing-graph";
 const graph = new EasingGraph(quad);
 stage.addChild(graph);
@@ -55,7 +55,7 @@ You can adjust the animations by using the `marker-` & `example-` properties in 
 
 There is a [react-pixi](https://github.com/inlet/react-pixi) component included with the code.
 
-```javascript
+```js
 import { EasingGraphComponent as EasingGraph } from "pixi-easing-graph";
 ```
 
@@ -63,7 +63,7 @@ All the options can be passed to this component as props as well as `f`, `x`, `y
 
 As a hack, to trigger the animation, you can also set the `play` property to a different value to trigger the animation.
 
-```javascript
+```js
 <button onClick={()=> setPlay(play === 0 ? 1 : 0)}>
 ```
 
