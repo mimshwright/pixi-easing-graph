@@ -1,4 +1,4 @@
-import { Stage, Text } from "@inlet/react-pixi";
+import { Stage } from "@inlet/react-pixi";
 import EasingGraph from "./EasingGraphComponent";
 import {
   EasingFunction,
@@ -6,7 +6,7 @@ import {
   ExamplePosition,
 } from "./EasingGraph";
 import "./App.css";
-import React, { ReactChildren, useState } from "react";
+import React, { ReactNode, useState } from "react";
 
 const poly = (exp: number) => (x: number) => x ** exp;
 const cubic = poly(3);
@@ -68,7 +68,7 @@ const fs = {
   "quintic flipped": reflectX(quintic),
   sine: sine(2),
   "sine blend": reflectXY(blend(I, sine(2.25))),
-  rand: (x: number) => Math.random(),
+  rand: (_: number) => Math.random(),
   const: K(0.5),
   thresh: thresh(0.5),
   "clamped quadratic": (x: number) => Math.max(0.1, Math.min(0.8, poly(2)(x))),
@@ -81,16 +81,12 @@ const styles: Record<string, EasingGraphStyle> = {
   Fill: "fill",
 };
 
-type ToggleButtonProps<T> = {
+type ToggleButtonProps = {
   value: boolean;
   setter: React.Dispatch<React.SetStateAction<boolean>>;
-  children: ReactChildren | string;
+  children: ReactNode | string;
 };
-const ToggleButton = ({
-  children,
-  value,
-  setter,
-}: ToggleButtonProps<unknown>) => (
+const ToggleButton = ({ children, value, setter }: ToggleButtonProps) => (
   <button className={value ? "selected" : ""} onClick={() => setter(!value)}>
     {children}
   </button>

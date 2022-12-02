@@ -1,4 +1,4 @@
-import { Sprite, Graphics, Texture, Ticker, TickerCallback } from "pixi.js";
+import { Sprite, Graphics, Texture, Ticker } from "pixi.js";
 import { apply, times, zip, clamp, identity } from "ramda";
 
 type Point = [number, number];
@@ -65,12 +65,12 @@ class EasingGraph extends Sprite {
   trail: Graphics;
   options: EasingGraphOptions;
 
-  isPlaying: boolean = false;
+  isPlaying = false;
   marker: Marker;
   exampleX: Marker;
   exampleY: Marker;
-  t: number = 0;
-  duration: number = 2000;
+  t = 0;
+  duration = 2000;
 
   static defaultOptions = defaultOptions;
 

@@ -1,0 +1,4 @@
+{
+  "*": "yarn lint:prettier",
+  "*.{j,t}s{,x}": "yarn lint:eslint"
+}

@@ -11,11 +11,11 @@ export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
   create: ({ f, ...options }) => {
     return new EasingGraph(f, options);
   },
-  didMount: (instance, parent) => {
+  didMount: (instance, _parent) => {
     // apply custom logic on mount
     instance.draw();
   },
-  willUnmount: (instance, parent) => {
+  willUnmount: (_instance, _parent) => {
     // clean up before removal
   },
   applyProps: (instance, oldProps, newProps) => {
