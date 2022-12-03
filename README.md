@@ -1,6 +1,6 @@
 # pixi-easing-graph
 
-A utility component for viewing easing functions in Pixi.js
+A utility component for viewing easing functions in [Pixi.js](https://github.com/pixijs/pixijs) and [react-pixi](https://github.com/inlet/react-pixi). The graph includes an animated example and can be highly-customized to fit your needs. Any function which takes a number between 0 and 1 and returns a number between 0 and 1 should work.
 
 ![easing-graph](https://user-images.githubusercontent.com/141928/205437278-2502105e-e92d-4eab-a110-613ac6a5ab9c.png)
 
@@ -80,13 +80,13 @@ As a hack, to trigger the animation, you can also set the `play` property to a d
 - `lint` : lint the code. You can also do `fix` to auto-fix.
 - `test` : test with jest. Also `test:coverage` and `test:watch`
 - `build` : bundle the code
-- `cz` & `release` : see below
+- `commit` & `release` : see below
 
 ### Commits & Releases
 
 Code is automatically linted before being committed. I recommend installing the plugins for eslint and prettier in your code editor. You can attempt to fix linting issues with `yarn fix`.
 
-When ready to commit, please commit using `yarn cz` to use commitizen for standard format commits.
+When ready to commit, please commit using `yarn commit` to use commitizen for standard format commits.
 
 When ready to release use `yarn release` with the `-r patch|minor|major` flag (default without the flag is `patch`).
 
