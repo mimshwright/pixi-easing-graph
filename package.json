@@ -14,7 +14,15 @@
     "url": "https://github.com/mimshwright/pixi-easing-graph/issues"
   },
   "keywords": [
-    "<KEYWORDS>"
+    "pixi.js",
+    "animation",
+    "tween",
+    "easing",
+    "functional",
+    "component",
+    "react-pixi",
+    "graph",
+    "utility"
   ],
   "type": "module",
   "main": "./dist/pixi-easing-graph.umd.cjs",
@@ -49,6 +57,7 @@
     "build:vite": "vite build",
     "build": "run-s build:*",
     "commit": "cz",
+    "ci": "run-s commit",
     "release": "standard-version"
   },
   "peerDependencies": {
