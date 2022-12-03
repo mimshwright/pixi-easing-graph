@@ -23,6 +23,9 @@ const graph = new EasingGraph(func [, options]);
 - `background` - background color - default `0xffffff`
 - `foreground` - foreground (graph) color - default `0x000000`
 - `fillAlpha` - alpha for the foreground color in "fill" mode - default `0`5,
+- `gridCount` - How many lines in the grid on each axis. If 0, no grid is drawn - default `10`
+- `gridSubdivisions` - when true, the middle and edges of the grid are emphasized - default `true`
+- `gridColor` - Color of the grid - default `0xcccccc`
 - `showMarker` - when true, the animation includes a marker dot that follows the graph - default `true`
 - `markerColor` - color of the marker - default `0xff0000`
 - `markerSize` - size of the marker - default `10`
@@ -32,9 +35,9 @@ const graph = new EasingGraph(func [, options]);
 - `exampleColor` - color of the example animation - default `0x333333`
 - `exampleSize` - size of the example - default `50`
 - `exampleTrail` - when true, the examples leave a trail of dots - default `false`
-- `gridCount` - How many lines in the grid on each axis. If 0, no grid is drawn - default `10`
-- `gridColor` - Color of the grid - default `0xcccccc`
-- `gridSubdivisions` - when true, the middle and edges of the grid are emphasized - default `true`
+- `duration` - Duration of the animation in milliseconds. - default is `2000`
+- `autoPlay` - When true, the animation automatically plays any time `draw()` is called. - default `false`
+- `loop` - When true, after you `play()` the animation will loop continuously until you call `stop()` - default `false`
 
 ### Animation
 

@@ -49,7 +49,6 @@ export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
 
     if (!dirty) return;
     instance.draw();
-    instance.play();
   },
   config: {
     // destroy instance on unmount?

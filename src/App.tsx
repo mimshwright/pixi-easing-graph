@@ -96,6 +96,11 @@ const isDarkMode =
   window.matchMedia &&
   window.matchMedia("(prefers-color-scheme: dark)").matches;
 
+const cycleBetween =
+  <T,>(a: T, b: T, c: T) =>
+  (input: T) =>
+    input === a ? b : input === b ? c : a;
+
 function App() {
   const [f, setF] = useState<EasingFunction>(() => fs["cubic in out"]);
   const [style, setStyle] = useState<EasingGraphStyle>("line");
@@ -105,6 +110,8 @@ function App() {
   const [showExample, setShowExample] = useState(true);
   const [position, setPosition] = useState<ExamplePosition>("bottom");
   const [play, setPlay] = useState(0);
+  const [loop, setLoop] = useState(false);
+  const [duration, setDuration] = useState(2000);
 
   const replay = () => setPlay((play + 1) % 2);
   const functionMap = Object.entries(fs);
@@ -154,11 +161,11 @@ function App() {
           gridCount={showGrid ? 10 : 0}
           gridColor={isDarkMode ? 0x6600ff : 0x00ffff}
           gridSubdivisions={true}
+          duration={duration}
+          loop={loop}
+          autoPlay={true}
         ></EasingGraph>
       </Stage>
-      <div>
-        <button onClick={replay}>Replay 🔄</button>
-      </div>
       <div>
         <h2>Functions</h2>
         {functionMap.map(([key, value]) => (
@@ -196,6 +203,17 @@ function App() {
           <ToggleButton value={clamp} setter={setClamp}>
             Clamp Values
           </ToggleButton>
+          <ToggleButton value={loop} setter={setLoop}>
+            Loop animations
+          </ToggleButton>
+          <button
+            onClick={() => setDuration(cycleBetween(2000, 4000, 500)(duration))}
+          >
+            {`Animation speed (${
+              duration === 2000 ? "med" : duration === 500 ? "fast" : "slow"
+            })`}
+          </button>
+          <button onClick={replay}>Replay 🔄</button>
           <div>
             <ToggleButton value={showExample} setter={setShowExample}>
               Show Example
@@ -209,13 +227,11 @@ function App() {
               <button
                 onClick={() =>
                   setPosition(
-                    position === "both"
-                      ? "bottom"
-                      : position === "bottom"
-                      ? "right"
-                      : position === "right"
-                      ? "both"
-                      : "bottom"
+                    cycleBetween<ExamplePosition>(
+                      "both",
+                      "bottom",
+                      "right"
+                    )(position)
                   )
                 }
               >

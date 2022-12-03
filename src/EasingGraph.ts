@@ -28,6 +28,9 @@ export interface EasingGraphOptions {
   gridColor: number;
   gridCount: number;
   gridSubdivisions: boolean;
+  duration: number;
+  autoPlay: boolean;
+  loop: boolean;
 }
 
 const ticker = Ticker.shared;
@@ -54,7 +57,9 @@ const defaultOptions: EasingGraphOptions = {
   gridCount: 10,
   gridColor: 0xcccccc,
   gridSubdivisions: true,
-  // TODO: Add animation properties
+  duration: 2000,
+  autoPlay: false,
+  loop: false,
 };
 
 const clamp01 = clamp(0, 1);
@@ -70,7 +75,6 @@ class EasingGraph extends Sprite {
   exampleX: Marker;
   exampleY: Marker;
   t = 0;
-  duration = 2000;
 
   static defaultOptions = defaultOptions;
 
@@ -130,16 +134,7 @@ class EasingGraph extends Sprite {
 
   private animationStep() {
     this.t += ticker.deltaMS;
-    const {
-      t,
-      options,
-      exampleX: ex,
-      exampleY: ey,
-      marker,
-      f,
-      duration,
-      trail,
-    } = this;
+    const { t, options, exampleX: ex, exampleY: ey, marker, f, trail } = this;
     const {
       clamp,
       width,
@@ -148,6 +143,8 @@ class EasingGraph extends Sprite {
       markerTrail,
       dotSize,
       foreground,
+      duration,
+      loop,
     } = options;
 
     const clampFunction = clamp ? clamp01 : identity;
@@ -174,6 +171,9 @@ class EasingGraph extends Sprite {
 
     if (t > duration) {
       this.stop();
+      if (loop) {
+        this.play();
+      }
     }
   }
   draw() {
@@ -186,6 +186,7 @@ class EasingGraph extends Sprite {
       steps: stepsOrNaN,
       gridCount,
       clamp,
+      autoPlay,
     } = this.options;
     const steps = isNaN(stepsOrNaN) ? width : stepsOrNaN;
 
@@ -218,6 +219,10 @@ class EasingGraph extends Sprite {
       dot: this.drawDots,
     };
     drawFunctions[style].call(this, pixelCoords);
+
+    if (autoPlay) {
+      this.play();
+    }
   }
 
   drawDots(coords: Point[]) {
