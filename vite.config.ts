@@ -5,7 +5,9 @@ import dts from "vite-plugin-dts";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/guide/build.html#library-mode
+// https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
 export default defineConfig({
+  base: "/pixi-easing-graph/",
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
