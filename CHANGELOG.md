@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.2...v0.1.3) (2022-12-03)
+
+### Bug Fixes
+
+- **build:** fixed issues with gh-pages (for real this time) ([37b679d](https://github.com/mimshwright/pixi-easing-graph/commit/37b679db4a97fd7534ab93a3ff2f9b17f65f495f))
+
 ### [0.1.2](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.1...v0.1.2) (2022-12-03)
 
 ### Bug Fixes
