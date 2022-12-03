@@ -2,7 +2,6 @@ import pkg from "./package.json";
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/guide/build.html#library-mode
 // https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
@@ -30,5 +29,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [dts(), react()],
+  plugins: [dts()],
 });

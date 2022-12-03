@@ -81,6 +81,7 @@ As a hack, to trigger the animation, you can also set the `play` property to a d
 - `test` : test with jest. Also `test:coverage` and `test:watch`
 - `build` : bundle the code
 - `commit` & `release` : see below
+- `deploy`: Build the demo code and publish to gh-pages
 
 ### Commits & Releases
 
@@ -91,3 +92,5 @@ When ready to commit, please commit using `yarn commit` to use commitizen for st
 When ready to release use `yarn release` with the `-r patch|minor|major` flag (default without the flag is `patch`).
 
 You'll then need to publish your changes separately.
+
+You can deploy an updated demo to github pages using `yarn deploy`
