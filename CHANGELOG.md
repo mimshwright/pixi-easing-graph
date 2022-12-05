@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.3...v0.1.4) (2022-12-05)
+
+### Features
+
+- **style:** added backgroundAlpha property ([f5465e0](https://github.com/mimshwright/pixi-easing-graph/commit/f5465e01556d6161179e0ce57f27c6daa428876c))
+
 ### [0.1.3](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.2...v0.1.3) (2022-12-03)
 
 ### Bug Fixes
