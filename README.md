@@ -24,7 +24,8 @@ const graph = new EasingGraph(func [, options]);
 - `dotSize` - size of dots when style is "dot" (also used for trails) - default `2`
 - `background` - background color - default `0xffffff`
 - `foreground` - foreground (graph) color - default `0x000000`
-- `fillAlpha` - alpha for the foreground color in "fill" mode - default `0`5,
+- `backgroundAlpha` - alpha for the background color - default `1.0`,
+- `fillAlpha` - alpha for the foreground color in "fill" mode - default `0.5`,
 - `gridCount` - How many lines in the grid on each axis. If 0, no grid is drawn - default `10`
 - `gridSubdivisions` - when true, the middle and edges of the grid are emphasized - default `true`
 - `gridColor` - Color of the grid - default `0xcccccc`

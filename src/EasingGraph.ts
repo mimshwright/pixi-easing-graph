@@ -15,6 +15,7 @@ export interface EasingGraphOptions {
   background: number;
   foreground: number;
   fillAlpha: number;
+  backgroundAlpha: number;
   showMarker: boolean;
   markerColor: number;
   markerSize: number;
@@ -44,6 +45,7 @@ const defaultOptions: EasingGraphOptions = {
   dotSize: 2,
   background: 0xffffff,
   foreground: 0x000000,
+  backgroundAlpha: 1.0,
   fillAlpha: 0.5,
   showMarker: true,
   markerColor: 0xff0000,
@@ -183,6 +185,7 @@ class EasingGraph extends Sprite {
       height,
       style,
       background,
+      backgroundAlpha,
       steps: stepsOrNaN,
       gridCount,
       clamp,
@@ -205,7 +208,7 @@ class EasingGraph extends Sprite {
     const pixelCoords: Point[] = coords.map(coordToPixel);
 
     g.clear();
-    g.beginFill(background);
+    g.beginFill(background, backgroundAlpha);
     g.drawRect(0, 0, width, height);
     g.endFill();
 

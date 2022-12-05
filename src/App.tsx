@@ -149,6 +149,7 @@ function App() {
           width={300}
           height={300}
           background={isDarkMode ? 0x333333 : showGrid ? 0xeeffff : 0xffffff}
+          backgroundAlpha={1.0}
           foreground={isDarkMode ? 0x00ffff : 0x0000ff}
           fillAlpha={0.5}
           markerColor={0xff00ff}
