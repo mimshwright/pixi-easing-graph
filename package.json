@@ -1,6 +1,6 @@
 {
   "name": "pixi-easing-graph",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "mit",
   "private": false,
   "description": "A widget for Pixi.js that displays the path of an easing function on a graph.",
@@ -35,8 +35,7 @@
     }
   },
   "files": [
-    "dist",
-    "demo"
+    "dist"
   ],
   "scripts": {
     "prepare:peers": "install-peers",
