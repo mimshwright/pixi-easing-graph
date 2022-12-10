@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.5...v0.1.6) (2022-12-10)
+
+### Bug Fixes
+
+- **darkmode:** changed the way dark mode is detected to happen on redraw instead of page refresh ([87509c6](https://github.com/mimshwright/pixi-easing-graph/commit/87509c6ed77916643c2d4e65280ee3fdca74c4a0))
+
 ### [0.1.4](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.3...v0.1.4) (2022-12-05)
 
 ### Features
