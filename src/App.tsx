@@ -92,16 +92,16 @@ const ToggleButton = ({ children, value, setter }: ToggleButtonProps) => (
   </button>
 );
 
-const isDarkMode =
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches;
-
 const cycleBetween =
   <T,>(a: T, b: T, c: T) =>
   (input: T) =>
     input === a ? b : input === b ? c : a;
 
 function App() {
+  const isDarkMode =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+
   const [f, setF] = useState<EasingFunction>(() => fs["cubic in out"]);
   const [style, setStyle] = useState<EasingGraphStyle>("line");
   const [clamp, setClamp] = useState(false);
