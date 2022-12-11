@@ -3,7 +3,7 @@
   "version": "0.1.6",
   "license": "mit",
   "private": false,
-  "description": "A widget for Pixi.js that displays the path of an easing function on a graph.",
+  "description": "A utility component for viewing easing functions in Pixi.js and react-pixi. The graph includes an animated example and can be highly-customized to fit your needs. Functions are expected to take a single number between (roughly) 0 and 1 and return a number between 0 and 1.",
   "author": "Mims H. Wright",
   "homepage": "https://mimshwright.github.io/pixi-easing-graph/",
   "repository": {

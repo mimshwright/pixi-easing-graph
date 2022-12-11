@@ -1,6 +1,6 @@
 # pixi-easing-graph
 
-A utility component for viewing easing functions in [Pixi.js](https://github.com/pixijs/pixijs) and [react-pixi](https://github.com/inlet/react-pixi). The graph includes an animated example and can be highly-customized to fit your needs. Any function which takes a number between 0 and 1 and returns a number between 0 and 1 should work.
+A utility component for viewing easing functions in Pixi.js and react-pixi. The graph includes an animated example and can be highly-customized to fit your needs. Function are expected to take a single a number between 0 and 1 and return a number between 0 and 1.
 
 ![easing-graph](https://user-images.githubusercontent.com/141928/205437278-2502105e-e92d-4eab-a110-613ac6a5ab9c.png)
 
@@ -21,7 +21,8 @@ const graph = new EasingGraph(func [, options]);
 - `style` - graph style: "dot", "line", or "fill" - default `"dot"`,
 - `clamp` - if true, clamps values between the range of 0 and 1 - default `false`
 - `steps` - number of steps of the function to draw. If the value is NaN, this will equal `width` - default `NaN`
-- `dotSize` - size of dots when style is "dot" (also used for trails) - default `2`
+- `dotSize` - radius of dots when style is "dot" (also used for trails) - default `2`
+- `lineWidth` - thickness of line when style is "line" - default `1`
 - `background` - background color - default `0xffffff`
 - `foreground` - foreground (graph) color - default `0x000000`
 - `backgroundAlpha` - alpha for the background color - default `1.0`,
@@ -32,12 +33,13 @@ const graph = new EasingGraph(func [, options]);
 - `showMarker` - when true, the animation includes a marker dot that follows the graph - default `true`
 - `markerColor` - color of the marker - default `0xff0000`
 - `markerSize` - size of the marker - default `10`
-- `markerTrail` - when true, the marker leave a trail of dots - default `false`
+- `markerTrail` - when true, the marker leave a trail of dots. If style is `dot` it won't be drawn. - default `false`
 - `showMarker` - when true, the animation includes an example animation - default `false`
 - `examplePosition` - position of the animated example: "bottom", "right" or "both - default `"bottom"`,
 - `exampleColor` - color of the example animation - default `0x333333`
 - `exampleSize` - size of the example - default `50`
 - `exampleTrail` - when true, the examples leave a trail of dots - default `false`
+- `showValues` - when true, shows the input and output values in a small text field - default `false`, fill defaults to `foreground`
 - `duration` - Duration of the animation in milliseconds. - default is `2000`
 - `autoPlay` - When true, the animation automatically plays any time `draw()` is called. - default `false`
 - `loop` - When true, after you `play()` the animation will loop continuously until you call `stop()` - default `false`

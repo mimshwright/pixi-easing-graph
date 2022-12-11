@@ -7,6 +7,7 @@ import {
 } from "./EasingGraph";
 import "./App.css";
 import React, { ReactNode, useState } from "react";
+import pkg from "../package.json";
 
 const poly = (exp: number) => (x: number) => x ** exp;
 const cubic = poly(3);
@@ -108,6 +109,7 @@ function App() {
   const [showGrid, setShowGrid] = useState(true);
   const [trails, setTrails] = useState(false);
   const [showExample, setShowExample] = useState(true);
+  const [showValues, setShowValues] = useState(false);
   const [position, setPosition] = useState<ExamplePosition>("bottom");
   const [play, setPlay] = useState(0);
   const [loop, setLoop] = useState(false);
@@ -119,7 +121,10 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Easing Graph Demo</h1>
+      <h1>
+        pixi-easing-graph<span className="version"> v{pkg.version}</span>
+      </h1>
+      <p className="description">{pkg.description}</p>
       <div>
         <a
           style={{ display: "block" }}
@@ -142,7 +147,9 @@ function App() {
           f={f}
           play={play}
           style={style}
-          // steps={50}
+          dotSize={3}
+          lineWidth={2}
+          steps={80}
           clamp={clamp}
           x={50}
           y={50}
@@ -150,17 +157,19 @@ function App() {
           height={300}
           background={isDarkMode ? 0x333333 : showGrid ? 0xeeffff : 0xffffff}
           backgroundAlpha={1.0}
-          foreground={isDarkMode ? 0x00ffff : 0x0000ff}
+          foreground={isDarkMode ? 0xccddff : 0x0066ff}
           fillAlpha={0.5}
-          markerColor={0xff00ff}
+          markerColor={0xff44cc}
           markerSize={8}
           showExample={showExample}
-          exampleColor={0xcc00ff}
+          exampleColor={0xff44cc}
           exampleSize={25}
           examplePosition={position}
           exampleTrail={trails}
+          markerTrail={trails}
+          showValues={showValues}
           gridCount={showGrid ? 10 : 0}
-          gridColor={isDarkMode ? 0x6600ff : 0x00ffff}
+          gridColor={isDarkMode ? 0x6600ff : 0xccddff}
           gridSubdivisions={true}
           duration={duration}
           loop={loop}
@@ -178,6 +187,11 @@ function App() {
             {key}
           </button>
         ))}
+        <div>
+          <ToggleButton value={clamp} setter={setClamp}>
+            Clamp Values
+          </ToggleButton>
+        </div>
       </div>
 
       <div className="columns">
@@ -196,26 +210,9 @@ function App() {
             <ToggleButton value={showGrid} setter={setShowGrid}>
               Show Grid
             </ToggleButton>
-          </div>
-        </div>
-
-        <div>
-          <h2>Other options</h2>
-          <ToggleButton value={clamp} setter={setClamp}>
-            Clamp Values
-          </ToggleButton>
-          <ToggleButton value={loop} setter={setLoop}>
-            Loop animations
-          </ToggleButton>
-          <button
-            onClick={() => setDuration(cycleBetween(2000, 4000, 500)(duration))}
-          >
-            {`Animation speed (${
-              duration === 2000 ? "med" : duration === 500 ? "fast" : "slow"
-            })`}
-          </button>
-          <button onClick={replay}>Replay 🔄</button>
-          <div>
+            <ToggleButton value={showValues} setter={setShowValues}>
+              Show Values
+            </ToggleButton>
             <ToggleButton value={showExample} setter={setShowExample}>
               Show Example
             </ToggleButton>
@@ -236,10 +233,27 @@ function App() {
                   )
                 }
               >
-                {`Example Position (${position})`}
+                {"Example Pos. "}
+                <span className="selected">{`${position}`}</span>
               </button>
             )}
           </div>
+        </div>
+
+        <div>
+          <h2>Animations</h2>
+          <ToggleButton value={loop} setter={setLoop}>
+            Loop animations
+          </ToggleButton>
+          <button
+            onClick={() => setDuration(cycleBetween(2000, 4000, 500)(duration))}
+          >
+            {"Animation speed "}
+            <span className="selected">
+              {duration === 2000 ? "med" : duration === 500 ? "fast" : "slow"}
+            </span>
+          </button>
+          <button onClick={replay}>Replay 🔄</button>
         </div>
       </div>
     </div>

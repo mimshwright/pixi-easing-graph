@@ -1,4 +1,4 @@
-import { Sprite, Graphics, Texture, Ticker } from "pixi.js";
+import { Sprite, Graphics, Texture, Ticker, Text } from "pixi.js";
 import { apply, times, zip, clamp, identity } from "ramda";
 
 type Point = [number, number];
@@ -26,6 +26,8 @@ export interface EasingGraphOptions {
   examplePosition: ExamplePosition;
   exampleTrail: boolean;
   dotSize: number;
+  lineWidth: number;
+  showValues: boolean;
   gridColor: number;
   gridCount: number;
   gridSubdivisions: boolean;
@@ -43,6 +45,7 @@ const defaultOptions: EasingGraphOptions = {
   clamp: false,
   steps: NaN,
   dotSize: 2,
+  lineWidth: 1,
   background: 0xffffff,
   foreground: 0x000000,
   backgroundAlpha: 1.0,
@@ -56,6 +59,7 @@ const defaultOptions: EasingGraphOptions = {
   exampleSize: 50,
   examplePosition: "bottom",
   exampleTrail: false,
+  showValues: false,
   gridCount: 10,
   gridColor: 0xcccccc,
   gridSubdivisions: true,
@@ -76,6 +80,7 @@ class EasingGraph extends Sprite {
   marker: Marker;
   exampleX: Marker;
   exampleY: Marker;
+  text: Text;
   t = 0;
 
   static defaultOptions = defaultOptions;
@@ -108,18 +113,24 @@ class EasingGraph extends Sprite {
     this.exampleY.x = this.options.width + exampleSize * 1.5;
     this.exampleY.y = this.options.height;
     this.addChild(this.exampleY);
+
+    this.text = new Text("", { fontSize: 10, fill: this.options.foreground });
+    this.text.visible = false;
+    this.text.x = 5;
+    this.text.y = 5;
+    this.addChild(this.text);
   }
 
   play() {
     this.stop();
 
-    const { showMarker, showExample, examplePosition } = this.options;
+    const { showMarker, showExample, examplePosition, showValues } =
+      this.options;
 
-    if (showMarker) this.marker.visible = true;
+    this.marker.visible = showMarker;
+    this.exampleY.visible = this.exampleX.visible = showExample;
+    this.text.visible = showValues;
 
-    if (showExample) {
-      this.exampleY.visible = this.exampleX.visible = true;
-    }
     if (examplePosition === "bottom") this.exampleY.visible = false;
     if (examplePosition === "right") this.exampleX.visible = false;
 
@@ -132,6 +143,15 @@ class EasingGraph extends Sprite {
   stop() {
     ticker.remove<EasingGraph>(this.animationStep, this);
     this.isPlaying = false;
+  }
+
+  private updateValues(x: number, y: number) {
+    const decimals = 5;
+    const fixed = (
+      (d: number) => (x: number) =>
+        Math.floor(x * 10 ** d) / 10 ** d
+    )(decimals);
+    this.text.text = `x: ${fixed(x)}\ny: ${fixed(y)}`;
   }
 
   private animationStep() {
@@ -147,6 +167,8 @@ class EasingGraph extends Sprite {
       foreground,
       duration,
       loop,
+      style,
+      showValues,
     } = options;
 
     const clampFunction = clamp ? clamp01 : identity;
@@ -166,10 +188,14 @@ class EasingGraph extends Sprite {
       if (ex.visible) g.drawCircle(ex.x, ex.y, dotSize);
       if (ey.visible) g.drawCircle(ey.x, ey.y, dotSize);
     }
-    if (markerTrail) {
+    if (markerTrail && style !== "dot") {
       if (marker.visible) g.drawCircle(marker.x, marker.y, dotSize);
     }
     g.endFill();
+
+    if (showValues) {
+      this.updateValues(x, y);
+    }
 
     if (t > duration) {
       this.stop();
@@ -238,12 +264,12 @@ class EasingGraph extends Sprite {
     g.endFill();
   }
   drawLines(coords: Point[]) {
-    const { foreground, height } = this.options;
+    const { foreground, height, lineWidth } = this.options;
     const g = this.graphics;
     const drawLine = apply(g.lineTo.bind(g));
 
     g.moveTo(0, height);
-    g.lineStyle(1, foreground);
+    g.lineStyle(lineWidth, foreground);
     coords.map(drawLine);
     g.lineStyle();
   }
