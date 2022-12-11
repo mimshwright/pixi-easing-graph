@@ -167,7 +167,7 @@ function App() {
           examplePosition={position}
           exampleTrail={trails}
           markerTrail={trails}
-          showValues={showValues}
+          showValues={true}
           gridCount={showGrid ? 10 : 0}
           gridColor={isDarkMode ? 0x6600ff : 0xccddff}
           gridSubdivisions={true}

@@ -1,4 +1,4 @@
-import { Sprite, Graphics, Texture, Ticker, Text } from "pixi.js";
+import { Sprite, Graphics, Texture, Ticker, Text, TextStyle } from "pixi.js";
 import { apply, times, zip, clamp, identity } from "ramda";
 
 type Point = [number, number];
@@ -28,6 +28,7 @@ export interface EasingGraphOptions {
   dotSize: number;
   lineWidth: number;
   showValues: boolean;
+  textStyle: TextStyle & { x?: number; y?: number };
   gridColor: number;
   gridCount: number;
   gridSubdivisions: boolean;
@@ -37,6 +38,8 @@ export interface EasingGraphOptions {
 }
 
 const ticker = Ticker.shared;
+
+const defaultTextStyle = { fontSize: 10, x: 5, y: 5 };
 
 const defaultOptions: EasingGraphOptions = {
   width: 250,
@@ -60,6 +63,7 @@ const defaultOptions: EasingGraphOptions = {
   examplePosition: "bottom",
   exampleTrail: false,
   showValues: false,
+  textStyle: {} as TextStyle,
   gridCount: 10,
   gridColor: 0xcccccc,
   gridSubdivisions: true,
@@ -69,6 +73,7 @@ const defaultOptions: EasingGraphOptions = {
 };
 
 const clamp01 = clamp(0, 1);
+const fixed = (d: number) => (x: number) => Math.round(x * 10 ** d) / 10 ** d;
 
 class EasingGraph extends Sprite {
   f: EasingFunction;
@@ -114,10 +119,16 @@ class EasingGraph extends Sprite {
     this.exampleY.y = this.options.height;
     this.addChild(this.exampleY);
 
-    this.text = new Text("", { fontSize: 10, fill: this.options.foreground });
+    const mergedStyle = {
+      ...{ fill: options.foreground },
+      ...defaultTextStyle,
+      ...options.textStyle,
+    };
+
+    this.text = new Text("", mergedStyle);
     this.text.visible = false;
-    this.text.x = 5;
-    this.text.y = 5;
+    this.text.x = mergedStyle.x;
+    this.text.y = mergedStyle.y;
     this.addChild(this.text);
   }
 
@@ -145,18 +156,14 @@ class EasingGraph extends Sprite {
     this.isPlaying = false;
   }
 
-  private updateValues(x: number, y: number) {
-    const decimals = 5;
-    const fixed = (
-      (d: number) => (x: number) =>
-        Math.floor(x * 10 ** d) / 10 ** d
-    )(decimals);
-    this.text.text = `x: ${fixed(x)}\ny: ${fixed(y)}`;
+  private updateText(x: number, y: number) {
+    const decimals = fixed(3);
+    this.text.text = `x: ${decimals(x)}\ny: ${decimals(y)}`;
   }
 
   private animationStep() {
     this.t += ticker.deltaMS;
-    const { t, options, exampleX: ex, exampleY: ey, marker, f, trail } = this;
+    const { options, exampleX: ex, exampleY: ey, marker, f, trail } = this;
     const {
       clamp,
       width,
@@ -170,6 +177,9 @@ class EasingGraph extends Sprite {
       style,
       showValues,
     } = options;
+
+    this.t = Math.min(this.t, duration);
+    const t = this.t;
 
     const clampFunction = clamp ? clamp01 : identity;
 
@@ -194,7 +204,7 @@ class EasingGraph extends Sprite {
     g.endFill();
 
     if (showValues) {
-      this.updateValues(x, y);
+      this.updateText(x, y);
     }
 
     if (t > duration) {

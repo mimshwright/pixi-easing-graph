@@ -40,6 +40,7 @@ const graph = new EasingGraph(func [, options]);
 - `exampleSize` - size of the example - default `50`
 - `exampleTrail` - when true, the examples leave a trail of dots - default `false`
 - `showValues` - when true, shows the input and output values in a small text field - default `false`, fill defaults to `foreground`
+- `textStyle` - If `showValues` is `true`, this is the style used to style the text. You can also include `x` and `y` to position the text. Values will be merged with the default. - default `{ fontSize: 10, x: 5, y: 5, fill: foreground]}`
 - `duration` - Duration of the animation in milliseconds. - default is `2000`
 - `autoPlay` - When true, the animation automatically plays any time `draw()` is called. - default `false`
 - `loop` - When true, after you `play()` the animation will loop continuously until you call `stop()` - default `false`
