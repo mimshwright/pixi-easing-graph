@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.6...v1.0.0) (2022-12-11)
+
+### Features
+
+- **styles, text:** impoved styling of the demo significantly. Added additional options to graph ([8ec12f5](https://github.com/mimshwright/pixi-easing-graph/commit/8ec12f524122bde487cb6c47719259cf25218f71))
+
 ### [0.1.6](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.5...v0.1.6) (2022-12-10)
 
 ### Bug Fixes
