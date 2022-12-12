@@ -5,22 +5,19 @@
   text-align: center;
 }
 
+canvas {
+  max-width: 90vw;
+  max-height: 90vw;
+}
+
 .App {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
 }
-.columns {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 1.5rem;
-}
+
 .selected {
   color: var(--color-highlight);
-}
-
-div {
-  margin-bottom: 0.5rem;
 }
 
 .version {

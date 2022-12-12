@@ -1,8 +1,12 @@
 import { PixiComponent } from "@inlet/react-pixi";
-import EasingGraph, { EasingFunction, EasingGraphOptions } from "./EasingGraph";
+import EasingGraph, {
+  EasingFunction,
+  EasingFunctionOptions,
+  EasingGraphOptions,
+} from "./EasingGraph";
 
 export type EasingGraphProps = {
-  f: EasingFunction;
+  f: EasingFunction | (EasingFunction | EasingFunctionOptions)[];
   x?: number;
   y?: number;
   play?: number;

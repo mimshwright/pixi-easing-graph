@@ -12,7 +12,7 @@ import {EasingGraph} from "pixi-easing-graph";
 const graph = new EasingGraph(func [, options]);
 ```
 
-`func` must be an easing function in the format `(x:number) => number` where the range of numbers expected for both input and output are between `0.0` and `1.0`
+`func` must be an easing function in the format `(x:number) => number` where the range of numbers expected for both input and output are between `0.0` and `1.0`. (see note below about "Drawing Multiple functions")
 
 `options` is an object with the following properties and default values:
 
@@ -59,6 +59,35 @@ graph.play();
 You can stop animations with `stop()`.
 
 You can adjust the animations by using the `marker-` & `example-` properties in `options`. _More animation options coming soon._
+
+### Drawing Multiple Functions
+
+It's possible to graph more than one function, for exmaple, if you want to compare two easing funcitons. To do this, replace the `func` param in the constructor with an array of functions.
+
+```javascript
+const f = (x) => x;
+const g = (x) => x * x;
+const h = (x) => x * x * x;
+const graph = new EasingGraph([f, g, h]);
+```
+
+The first function will be treated as the _primary_ funciton. Only the primary will be animated, show examples, and show text values. All others will only be drawn on the graph. (The ability to draw examples for all functions could be added in the future if needed.)
+
+The functions will be drawn in reverse order so the primary funciton is drawn on top.
+
+By default, the different functions will all use the same styling. To add custom styling to each one, you can create an object for each function...
+
+```javascript
+const graph = new EasingGraph([{f:f, foreground: 0x0000FF}, {f:g, foreground:0xFF0000, {f:h, foreground: 0x00FF00}]);
+```
+
+Any that don't define `foreground` will use the default value from the options object.
+
+So to summarize, the types that can be passed into the first argument of the constructor are:
+
+```typescript
+EasingFunction | (EasingFunction | {f:EasingFunction, foreground?:number })[]
+```
 
 ## react-pixi
 

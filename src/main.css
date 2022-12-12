@@ -43,7 +43,7 @@ body {
 
 h1 {
   font-size: 3em;
-  line-height: 1;
+  margin: 1.5rem 0 0.5rem 0;
 }
 h1,
 h2 {
@@ -53,8 +53,8 @@ h2 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.4em 1em;
+  font-size: 0.8rem;
   font-weight: 500;
   font-family: inherit;
   text-transform: lowercase;
@@ -90,5 +90,27 @@ button.selected {
   }
   button.selected {
     color: #ffffff;
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 1.5rem;
+}
+div {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .columns {
+    grid-template-columns: auto;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  button {
+    padding: 0.5em;
+    font-size: 13px;
   }
 }

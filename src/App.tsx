@@ -62,10 +62,10 @@ const fs = {
   linear: I,
   "linear +0.5": offsetY(0.5)(I),
   "linear ⨉2": scale(2)(I),
-  "cubic (x^3)": cubic,
+  "cubic x^3": cubic,
   "cubic out": easeOut(cubic),
   "cubic in out": easeInOut(cubic),
-  "quintic (x^5)": quintic,
+  "quintic x^5": quintic,
   "quintic flipped": reflectX(quintic),
   sine: sine(2),
   "sine blend": reflectXY(blend(I, sine(2.25))),
@@ -75,6 +75,12 @@ const fs = {
   "clamped quadratic": (x: number) => Math.max(0.1, Math.min(0.8, poly(2)(x))),
   mirror: mirror(I),
   overshoot,
+};
+const secondFunctions: Record<string, EasingFunction | undefined> = {
+  none: undefined,
+  linear: fs.linear,
+  cubic: fs["cubic x^3"],
+  sine: fs.sine,
 };
 const styles: Record<string, EasingGraphStyle> = {
   Dot: "dot",
@@ -104,6 +110,7 @@ function App() {
     window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   const [f, setF] = useState<EasingFunction>(() => fs["cubic in out"]);
+  const [f2, setF2] = useState<EasingFunction | undefined>(() => undefined);
   const [style, setStyle] = useState<EasingGraphStyle>("line");
   const [clamp, setClamp] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
@@ -117,6 +124,7 @@ function App() {
 
   const replay = () => setPlay((play + 1) % 2);
   const functionMap = Object.entries(fs);
+  const secondFunctionMap = Object.entries(secondFunctions);
   const styleMap = Object.entries(styles);
 
   return (
@@ -144,7 +152,7 @@ function App() {
         }}
       >
         <EasingGraph
-          f={f}
+          f={f2 ? [f, { f: f2, foreground: 0x66ffcc }] : f}
           play={play}
           style={style}
           dotSize={3}
@@ -176,20 +184,21 @@ function App() {
           autoPlay={true}
         ></EasingGraph>
       </Stage>
-      <div>
-        <h2>Functions</h2>
-        {functionMap.map(([key, value]) => (
-          <button
-            className={value === f ? "selected" : ""}
-            key={key}
-            onClick={() => setF(() => value)}
-          >
-            {key}
-          </button>
-        ))}
+      <div className="functions">
         <div>
+          <h2>Functions</h2>
+          {functionMap.map(([key, value]) => (
+            <button
+              className={value === f ? "selected" : ""}
+              key={key}
+              onClick={() => setF(() => value)}
+            >
+              {key}
+            </button>
+          ))}{" "}
+          |&nbsp;
           <ToggleButton value={clamp} setter={setClamp}>
-            Clamp Values
+            Clamp Values?
           </ToggleButton>
         </div>
       </div>
@@ -239,7 +248,18 @@ function App() {
             )}
           </div>
         </div>
-
+        <div>
+          <h2>Second Function</h2>
+          {secondFunctionMap.map(([key, value]) => (
+            <button
+              className={value === f2 ? "selected" : ""}
+              key={key}
+              onClick={() => setF2(() => value)}
+            >
+              {key}
+            </button>
+          ))}
+        </div>
         <div>
           <h2>Animations</h2>
           <ToggleButton value={loop} setter={setLoop}>

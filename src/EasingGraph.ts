@@ -1,11 +1,28 @@
 import { Sprite, Graphics, Texture, Ticker, Text, TextStyle } from "pixi.js";
-import { apply, times, zip, clamp, identity } from "ramda";
+import {
+  apply,
+  times,
+  zip,
+  clamp,
+  identity,
+  defaultTo,
+  prop,
+  pipe,
+  reverse,
+} from "ramda";
 
 type Point = [number, number];
 export type EasingFunction = (x: number) => number;
 
 export type EasingGraphStyle = "dot" | "line" | "fill";
 export type ExamplePosition = "bottom" | "right" | "both";
+
+export interface EasingFunctionOptions {
+  f: EasingFunction;
+  foreground?: number;
+  markerColor?: number;
+}
+type FuncOrFuncs = EasingFunction | (EasingFunction | EasingFunctionOptions)[];
 export interface EasingGraphOptions {
   width: number;
   height: number;
@@ -76,7 +93,24 @@ const clamp01 = clamp(0, 1);
 const fixed = (d: number) => (x: number) => Math.round(x * 10 ** d) / 10 ** d;
 
 class EasingGraph extends Sprite {
-  f: EasingFunction;
+  _f: EasingFunctionOptions[] = [];
+  set f(f: FuncOrFuncs) {
+    // Convert type of EasingFunction | (EasingFunction | EasingFunctionOptions)[] to
+    // EasingFunctionOptions[];
+    this._f =
+      f instanceof Array
+        ? f.map((f) => (typeof f === "function" ? { f } : f))
+        : [{ f }];
+    if (this._f.length === 0) {
+      throw new Error(
+        "There must be at least one easing function attached to the graph."
+      );
+    }
+  }
+  get f(): EasingFunctionOptions[] {
+    return this._f;
+  }
+
   graphics: Graphics;
   trail: Graphics;
   options: EasingGraphOptions;
@@ -90,9 +124,11 @@ class EasingGraph extends Sprite {
 
   static defaultOptions = defaultOptions;
 
-  constructor(f: EasingFunction, options: Partial<EasingGraphOptions> = {}) {
+  constructor(f: FuncOrFuncs, options: Partial<EasingGraphOptions> = {}) {
     super();
+
     this.f = f;
+
     this.options = { ...defaultOptions, ...options };
 
     this.graphics = new Graphics();
@@ -163,7 +199,7 @@ class EasingGraph extends Sprite {
 
   private animationStep() {
     this.t += ticker.deltaMS;
-    const { options, exampleX: ex, exampleY: ey, marker, f, trail } = this;
+    const { options, exampleX: ex, exampleY: ey, marker, trail } = this;
     const {
       clamp,
       width,
@@ -183,6 +219,7 @@ class EasingGraph extends Sprite {
 
     const clampFunction = clamp ? clamp01 : identity;
 
+    const f = this.f[0].f;
     const x = t / duration;
     const y = clampFunction(f(x));
 
@@ -220,6 +257,7 @@ class EasingGraph extends Sprite {
       width,
       height,
       style,
+      foreground,
       background,
       backgroundAlpha,
       steps: stepsOrNaN,
@@ -231,17 +269,27 @@ class EasingGraph extends Sprite {
 
     const clampFunction = clamp ? clamp01 : identity;
 
+    // reverse so that the last functions are drawn first.
+    const fs = reverse(this.f);
     const inputs = times((n) => n / (steps - 1), steps);
-    const outputs = inputs
-      .map(this.f)
-      // clamp values?
-      .map(clampFunction);
-    const coords: Point[] = zip(inputs, outputs);
+    const outputs = fs.map((f: EasingFunctionOptions) =>
+      inputs
+        .map(f.f)
+        // clamp values?
+        .map(clampFunction)
+    );
+    const coords: Point[][] = outputs.map((fOutputs) => zip(inputs, fOutputs));
     const coordToPixel = ([x, y]: Point): Point => [
       x * width,
       height - y * height,
     ];
-    const pixelCoords: Point[] = coords.map(coordToPixel);
+    const pixelCoords: Point[][] = coords.map((fCoords) =>
+      fCoords.map(coordToPixel)
+    );
+    const foregroundColors = fs.map(
+      pipe(prop("foreground"), defaultTo(foreground))
+    );
+    const drawParams = zip(pixelCoords, foregroundColors);
 
     g.clear();
     g.beginFill(background, backgroundAlpha);
@@ -257,15 +305,15 @@ class EasingGraph extends Sprite {
       fill: this.drawFill,
       dot: this.drawDots,
     };
-    drawFunctions[style].call(this, pixelCoords);
+    drawParams.map((params) => drawFunctions[style].apply(this, params));
 
     if (autoPlay) {
       this.play();
     }
   }
 
-  drawDots(coords: Point[]) {
-    const { foreground, dotSize } = this.options;
+  drawDots(coords: Point[], foreground: number) {
+    const { dotSize } = this.options;
     const g = this.graphics;
     const drawDot = (x: number, y: number) => g.drawCircle(x, y, dotSize);
 
@@ -273,18 +321,18 @@ class EasingGraph extends Sprite {
     coords.map(apply(drawDot));
     g.endFill();
   }
-  drawLines(coords: Point[]) {
-    const { foreground, height, lineWidth } = this.options;
+  drawLines(coords: Point[], foreground: number) {
+    const { height, lineWidth } = this.options;
     const g = this.graphics;
     const drawLine = apply(g.lineTo.bind(g));
 
     g.moveTo(0, height);
-    g.lineStyle(lineWidth, foreground);
+    g.lineStyle(lineWidth, Math.floor(foreground));
     coords.map(drawLine);
     g.lineStyle();
   }
-  drawFill(coords: Point[]) {
-    const { foreground, fillAlpha, width, height } = this.options;
+  drawFill(coords: Point[], foreground: number) {
+    const { fillAlpha, width, height } = this.options;
     const g = this.graphics;
     const drawLine = apply(g.lineTo.bind(g));
 
