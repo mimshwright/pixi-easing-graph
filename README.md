@@ -75,6 +75,9 @@ const h = (x) => x * x * x;
 const graph = new EasingGraph([f, g, h]);
 ```
 
+![download](https://user-images.githubusercontent.com/141928/207068064-cda34ebe-0778-4928-acf8-ebb80e92e111.png)
+
+
 The first function will be treated as the _primary_ funciton. Only the primary will be animated, show examples, and show text values. All others will only be drawn on the graph. (The ability to draw examples for all functions could be added in the future if needed.)
 
 The functions will be drawn in reverse order so the primary funciton is drawn on top.
