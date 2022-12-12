@@ -4,6 +4,8 @@ A utility component for viewing easing functions in Pixi.js and react-pixi. The 
 
 ![easing-graph](https://user-images.githubusercontent.com/141928/205437278-2502105e-e92d-4eab-a110-613ac6a5ab9c.png)
 
+## [Demo](mimshwright.github.io/pixi-easing-graph/)
+
 ## Usage
 
 ```js
