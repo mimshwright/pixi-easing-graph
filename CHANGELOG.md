@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/mimshwright/pixi-easing-graph/compare/v1.0.0...v1.1.0) (2022-12-12)
+
+### Features
+
+- **multiple functions:** added the ability to display multiple functions in the graph ([8392119](https://github.com/mimshwright/pixi-easing-graph/commit/8392119eb6bd4516d7ab15177544a27caac3d692))
+- **text:** added ability to style the text field ([5729394](https://github.com/mimshwright/pixi-easing-graph/commit/5729394f92cd9e4997e53f060b871b691b0eba54))
+
 ## [1.0.0](https://github.com/mimshwright/pixi-easing-graph/compare/v0.1.6...v1.0.0) (2022-12-11)
 
 ### Features
