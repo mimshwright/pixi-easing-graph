@@ -68,7 +68,7 @@ const fs = {
   "quintic x^5": quintic,
   "quintic flipped": reflectX(quintic),
   sine: sine(2),
-  "sine blend": reflectXY(blend(I, sine(2.25))),
+  "sine + linear": reflectXY(blend(I, sine(2.25))),
   rand: (_: number) => Math.random(),
   const: K(0.5),
   thresh: thresh(0.5),
@@ -175,7 +175,7 @@ function App() {
           examplePosition={position}
           exampleTrail={trails}
           markerTrail={trails}
-          showValues={true}
+          showValues={showValues}
           gridCount={showGrid ? 10 : 0}
           gridColor={isDarkMode ? 0x6600ff : 0xccddff}
           gridSubdivisions={true}
