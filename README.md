@@ -6,6 +6,8 @@ A utility component for viewing easing functions in Pixi.js and react-pixi. The 
 
 ## [Demo](mimshwright.github.io/pixi-easing-graph/)
 
+Check out the [Demo](mimshwright.github.io/pixi-easing-graph/) which shows off many of the features and is build with [react-pixi](https://github.com/inlet/react-pixi).
+
 ## Usage
 
 ```js
