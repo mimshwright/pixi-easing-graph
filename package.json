@@ -59,6 +59,7 @@
     "build": "run-s build:tsc build:vite",
     "commit": "cz",
     "ci": "run-s commit",
+    "prerelease": "run-s build",
     "release": "standard-version",
     "predeploy": "run-s build:tsc build:demo",
     "deploy": "gh-pages -d demo"
