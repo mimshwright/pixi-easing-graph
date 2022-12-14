@@ -244,7 +244,7 @@ class EasingGraph extends Sprite {
       this.updateText(x, y);
     }
 
-    if (t > duration) {
+    if (t >= duration) {
       this.stop();
       if (loop) {
         this.play();
