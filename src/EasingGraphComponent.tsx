@@ -19,8 +19,9 @@ export default PixiComponent<EasingGraphProps, EasingGraph>("EasingGraph", {
     // apply custom logic on mount
     instance.draw();
   },
-  willUnmount: (_instance, _parent) => {
+  willUnmount: (instance, _parent) => {
     // clean up before removal
+    instance.stop();
   },
   applyProps: (instance, oldProps, newProps) => {
     const {
