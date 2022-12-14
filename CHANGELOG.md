@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.4](https://github.com/mimshwright/pixi-easing-graph/compare/v1.1.3...v1.1.4) (2022-12-14)
+
+### Bug Fixes
+
+- **cleanup:** fixed an issue where animations weren't stopped before removing from render ([74f3459](https://github.com/mimshwright/pixi-easing-graph/commit/74f3459e5bebde2d6d16943715281a60d8da477e))
+
 ### [1.1.3](https://github.com/mimshwright/pixi-easing-graph/compare/v1.1.2...v1.1.3) (2022-12-14)
 
 ### Bug Fixes
