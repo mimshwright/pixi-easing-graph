@@ -8,6 +8,8 @@ import {
 import "./App.css";
 import React, { ReactNode, useState } from "react";
 import pkg from "../package.json";
+import Alea from "alea";
+import { memoizeWith } from "ramda";
 
 const poly = (exp: number) => (x: number) => x ** exp;
 const cubic = poly(3);
@@ -58,6 +60,10 @@ const overshoot = blend(
   (x: number) => (2 * sine(0.35)(x) - 1) * (1 / Math.sin(0.35 * Math.PI * 2))
 );
 
+const rng = Alea(1);
+const rand = (_: number) => rng();
+const randFixed = memoizeWith(String, rand);
+
 const fs = {
   linear: I,
   "linear +0.5": offsetY(0.5)(I),
@@ -69,7 +75,7 @@ const fs = {
   "quintic flipped": reflectX(quintic),
   sine: sine(2),
   "sine + linear": reflectXY(blend(I, sine(2.25))),
-  rand: (_: number) => Math.random(),
+  rand: randFixed,
   const: K(0.5),
   thresh: thresh(0.5),
   "clamped quadratic": (x: number) => Math.max(0.1, Math.min(0.8, poly(2)(x))),

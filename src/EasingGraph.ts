@@ -248,6 +248,7 @@ class EasingGraph extends Sprite {
       this.stop();
       if (loop) {
         this.play();
+        this.draw();
       }
     }
   }
@@ -307,7 +308,7 @@ class EasingGraph extends Sprite {
     };
     drawParams.map((params) => drawFunctions[style].apply(this, params));
 
-    if (autoPlay) {
+    if (autoPlay && this.isPlaying === false) {
       this.play();
     }
   }
