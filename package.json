@@ -1,6 +1,6 @@
 {
   "name": "pixi-easing-graph",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "license": "mit",
   "private": false,
   "description": "A utility component for viewing easing functions in Pixi.js and react-pixi. The graph includes an animated example and can be highly-customized to fit your needs. Functions are expected to take a single number between (roughly) 0 and 1 and return a number between 0 and 1.",
